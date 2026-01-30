@@ -11,9 +11,9 @@ class Settings(BaseSettings):
     SPLADE_API_URL: str = Field(default="http://localhost:8000/encode")
     
     # LLM設定
-    LLM_API_BASE: str = Field(default="http://gemma-api:11434/v1")
-    LLM_API_KEY: str = Field(default="not-needed")
-    LLM_MODEL_NAME: str = Field(default="gemma-3-4b-it")
+    LLM_API_BASE: str = Field(default="http://localhost:11434/v1")
+    LLM_API_KEY: str = Field(default="ollama")
+    LLM_MODEL_NAME: str = Field(default="gemma3:4b")
     
     # チャンク処理の設定
     LLM_CONTEXT_CHUNK_SIZE: int = Field(default=3)

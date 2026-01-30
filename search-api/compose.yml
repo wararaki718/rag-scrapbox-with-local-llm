@@ -8,7 +8,7 @@ services:
       - ELASTICSEARCH_URL=http://elasticsearch:9200
       - SPLADE_API_URL=http://splade-encoder:8000/encode
       - LLM_API_BASE=http://gemma-api:11434/v1
-      - LLM_MODEL_NAME=gemma-3-4b-it
+      - LLM_MODEL_NAME=gemma3:4b
     depends_on:
       - elasticsearch
       - splade-encoder

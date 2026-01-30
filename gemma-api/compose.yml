@@ -2,17 +2,17 @@ services:
   gemma-api:
     build:
       context: .
+    container_name: gemma-api
     ports:
       - "11434:11434"
     environment:
-      - MODEL_ID=google/gemma-3-4b-it
-    # GPUを使用する場合の設定（必要に応じてコメントアウトを外す）
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
+      - MODEL_NAME=gemma3:4b
+      - OLLAMA_HOST=http://host.docker.internal:11434
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
       - rag-net
+
+networks:
+  rag-net:
+    external: true
