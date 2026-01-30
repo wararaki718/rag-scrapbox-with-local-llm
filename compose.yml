@@ -1,0 +1,10 @@
+include:
+  - path: elasticsearch/compose.yml
+  - path: splade-encoder-api/compose.yml
+  - path: search-api/compose.yml
+  - path: web-ui/compose.yml
+
+networks:
+  rag-net:
+    name: rag-net
+    driver: bridge

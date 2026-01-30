@@ -1,0 +1,15 @@
+services:
+  search-api:
+    build:
+      context: .
+    ports:
+      - "8001:8001"
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - SPLADE_API_URL=http://splade-encoder:8000/encode
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    depends_on:
+      - elasticsearch
+      - splade-encoder
+    networks:
+      - rag-net

@@ -1,0 +1,11 @@
+services:
+  web-ui:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - search-api
+    networks:
+      - rag-net
