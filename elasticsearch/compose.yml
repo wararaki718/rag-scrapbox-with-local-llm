@@ -15,17 +15,17 @@ services:
     networks:
       - rag-net
 
-  kibana:
-    image: docker.elastic.co/kibana/kibana:8.16.0
-    container_name: kibana
-    environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-    ports:
-      - 5601:5601
-    networks:
-      - rag-net
-    depends_on:
-      - elasticsearch
+  # kibana:
+  #   image: docker.elastic.co/kibana/kibana:8.16.0
+  #   container_name: kibana
+  #   environment:
+  #     - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+  #   ports:
+  #     - 5601:5601
+  #   networks:
+  #     - rag-net
+  #   depends_on:
+  #     - elasticsearch
 
 volumes:
   es_data:

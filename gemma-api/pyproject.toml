@@ -1,0 +1,17 @@
+[project]
+name = "gemma-api"
+version = "0.1.0"
+description = "Gemma 3 4B API for RAG"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.100.0",
+    "uvicorn>=0.22.0",
+    "transformers>=4.48.0",
+    "torch>=2.0.0",
+    "accelerate>=0.26.0",
+    "pydantic>=2.0.0",
+    "loguru>=0.7.0",
+]
+
+[tool.uv]
+package = false

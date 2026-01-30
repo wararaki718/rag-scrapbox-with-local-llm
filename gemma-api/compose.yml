@@ -1,0 +1,18 @@
+services:
+  gemma-api:
+    build:
+      context: .
+    ports:
+      - "11434:11434"
+    environment:
+      - MODEL_ID=google/gemma-3-4b-it
+    # GPUを使用する場合の設定（必要に応じてコメントアウトを外す）
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    networks:
+      - rag-net

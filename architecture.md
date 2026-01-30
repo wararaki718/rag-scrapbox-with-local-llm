@@ -1,4 +1,4 @@
-# RAGシステム処理フロー：Scrapbox + SPLADE + Elasticsearch + Gemini 2.0 Flash
+# RAGシステム処理フロー：Scrapbox + SPLADE + Elasticsearch + Gemma 3 4B
 
 ```mermaid
 graph TD
@@ -12,6 +12,8 @@ graph TD
     subgraph "Shared Services"
         D_API{{SPLADE Embedding API}}
         note1[Generate Sparse Vectors]
+        LLM_API{{Gemma 3 4B API}}
+        note3[Local LLM Inference]
     end
 
     subgraph "Search Engine"
@@ -30,15 +32,15 @@ graph TD
         D_API -->|Sparse Vectors| G
         G -->|Sparse Search Query| E
         E -->|Search Results / Context| G
-        G -->|Query + Context| I[Gemini 2.0 Flash]
-        I -->|High-speed Generation| G
+        G -->|Query + Context| LLM_API
+        LLM_API -->|Local Generation| G
         G -->|Final Response| F
     end
 
     %% Styles
     style D_API fill:#fff4dd,stroke:#d4a017,stroke-width:2px
+    style LLM_API fill:#e1f5fe,stroke:#01579b,stroke-width:2px
     style E fill:#f9f,stroke:#333,stroke-width:2px
-    style I fill:#00d1ff,stroke:#005aab,stroke-width:3px
 ```
 
 ## 1. データ蓄積フェーズ（バッチ処理）
@@ -72,6 +74,6 @@ Scrapboxの知識を検索可能な状態でElasticsearchに格納するプロ�
 4. **コンテキスト構築**
    - 検索結果からスコアの高い上位数件のテキスト（コンテキスト）と、その出典（Scrapbox URL）を抽出します。
 5. **回答生成（Generation）**
-   - **Gemini 2.0 Flash** に対し、以下の情報をプロンプトとして入力します。
+   - **Gemma 3 4B API (Local LLM)** に対し、以下の情報をプロンプトとして入力します。
      - **システム指示**: 「提供されたScrapboxの情報のみに基づいて回答してください」
-     - **コンテキスト**: Elasticsearchから取得した関連
+     - **コンテキスト**: Elasticsearchから取得した関連テキストと、そのURL。

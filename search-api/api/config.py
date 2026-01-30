@@ -10,11 +10,12 @@ class Settings(BaseSettings):
     
     SPLADE_API_URL: str = Field(default="http://localhost:8000/encode")
     
-    GEMINI_API_KEY: str | None = Field(default=None)
-    GEMINI_MODEL_NAME: str = Field(default="gemini-3-flash-preview")  # デフォルトを安定したものに
+    # LLM設定
+    LLM_API_BASE: str = Field(default="http://gemma-api:11434/v1")
+    LLM_API_KEY: str = Field(default="not-needed")
+    LLM_MODEL_NAME: str = Field(default="gemma-3-4b-it")
     
-    # チャンク処理とRPM制限用の設定
-    GEMINI_CONTEXT_CHUNK_SIZE: int = Field(default=3)
-    GEMINI_RPM_DELAY: float = Field(default=1.0)  # 秒単位での遅延
+    # チャンク処理の設定
+    LLM_CONTEXT_CHUNK_SIZE: int = Field(default=3)
 
 settings = Settings()

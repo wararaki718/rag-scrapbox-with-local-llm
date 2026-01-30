@@ -6,7 +6,8 @@ Scrapbox のデータを RAG (Retrieval-Augmented Generation) で利用するた
 
 - `elasticsearch`: 検索エンジン。SPLADE によるベクトル検索をサポートします。
 - `splade-encoder-api`: テキストを SPLADE ベクトルに変換する API。
-- `search-api`: 検索および Gemini による回答生成を行う Web API。
+- `gemma-api`: Gemma 3 4B によるローカル LLM 推論を行う API (OpenAI 互換)。
+- `search-api`: 検索および回答生成を行う Web API。
 - `web-ui`: ユーザーフレンドリーな検索インターフェースを提供する React (Vite) アプリケーション。
 - `ingestion-batch`: Scrapbox のデータを Elasticsearch に取り込むバッチ。
 
@@ -14,9 +15,9 @@ Scrapbox のデータを RAG (Retrieval-Augmented Generation) で利用するた
 
 ### 準備
 
-1. `.env` ファイルを作成し、Gemini API キーを設定します。
+1. `.env` ファイルを作成し、必要に応じて設定を行います。
    ```text
-   GEMINI_API_KEY=your_api_key_here
+   # デフォルトの設定で動作します
    ```
 
 ### サービスの起動
