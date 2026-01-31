@@ -1,9 +1,9 @@
 from fastapi import Depends, FastAPI, HTTPException
 from loguru import logger
 
-from .deps import get_gemini_client, get_search_client, get_splade_client
+from .deps import get_llm_client, get_search_client, get_splade_client
 from .encoder import SpladeClient
-from .llm import GeminiClient
+from .llm import LLMClient
 from .models import ChatResponse, SearchRequest
 from .search import SearchClient
 
@@ -16,7 +16,7 @@ async def chat(
     request: SearchRequest,
     search_client: SearchClient = Depends(get_search_client),
     splade_client: SpladeClient = Depends(get_splade_client),
-    gemini_client: GeminiClient = Depends(get_gemini_client),
+    llm_client: LLMClient = Depends(get_llm_client),
 ):
     try:
         logger.info(f"Query: {request.query}")
@@ -28,7 +28,7 @@ async def chat(
         contexts = await search_client.search(sparse_vector)
 
         # 3. 回答生成
-        answer = await gemini_client.generate_answer(request.query, contexts)
+        answer = await llm_client.generate_answer(request.query, contexts)
 
         return ChatResponse(answer=answer, sources=contexts)
     except Exception as e:

@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import AsyncMock
 from api.main import app
-from api.deps import get_search_client, get_splade_client, get_gemini_client
+from api.deps import get_search_client, get_splade_client, get_llm_client
 
 @pytest.fixture(autouse=True)
 def cleanup_overrides():
@@ -37,7 +37,7 @@ async def test_chat_success(client):
     # Setup dependency overrides
     app.dependency_overrides[get_splade_client] = lambda: mock_splade
     app.dependency_overrides[get_search_client] = lambda: mock_search
-    app.dependency_overrides[get_gemini_client] = lambda: mock_gemini
+    app.dependency_overrides[get_llm_client] = lambda: mock_gemini
 
     response = await client.post(
         "/chat",

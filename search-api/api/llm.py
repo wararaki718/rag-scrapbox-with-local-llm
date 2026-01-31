@@ -1,5 +1,5 @@
 import asyncio
-from google import genai
+import httpx
 from loguru import logger
 from tenacity import (
     retry,
@@ -12,42 +12,47 @@ from .config import settings
 from .models import SearchResult
 
 
-class GeminiClient:
+class LLMClient:
     def __init__(self):
-        self.client = genai.Client(api_key=settings.GEMINI_API_KEY)
-        self.model_name = settings.GEMINI_MODEL_NAME
+        self.api_base = settings.LLM_API_BASE.rstrip("/")
+        self.api_key = settings.LLM_API_KEY
+        self.model_name = settings.LLM_MODEL_NAME
 
     @retry(
         stop=stop_after_attempt(3),
         wait=wait_exponential(multiplier=1, min=2, max=10),
-        retry=retry_if_exception_type(Exception),  # 必要に応じて特定の例外に絞り込む
+        retry=retry_if_exception_type(Exception),
         before_sleep=lambda retry_state: logger.warning(
-            f"Gemini API request failed. Retrying... (attempt {retry_state.attempt_number})"
+            f"LLM API request failed. Retrying... (attempt {retry_state.attempt_number})"
         ),
     )
     async def _generate_with_retry(self, prompt: str) -> str:
-        response = await self.client.aio.models.generate_content(
-            model=self.model_name, contents=prompt
-        )
-        return response.text
+        async with httpx.AsyncClient(timeout=60.0) as client:
+            response = await client.post(
+                f"{self.api_base}/chat/completions",
+                headers={"Authorization": f"Bearer {self.api_key}"},
+                json={
+                    "model": self.model_name,
+                    "messages": [{"role": "user", "content": prompt}],
+                    "temperature": 0.7,
+                },
+            )
+            response.raise_for_status()
+            data = response.json()
+            return data["choices"][0]["message"]["content"]
 
     async def generate_answer(self, query: str, contexts: list[SearchResult]) -> str:
         if not contexts:
             return "関連する情報が見つかりませんでした。"
 
         # チャンクごとに分割
-        chunk_size = settings.GEMINI_CONTEXT_CHUNK_SIZE
+        chunk_size = settings.LLM_CONTEXT_CHUNK_SIZE
         chunks = [
             contexts[i : i + chunk_size] for i in range(0, len(contexts), chunk_size)
         ]
 
         current_answer = ""
         for i, chunk in enumerate(chunks):
-            # 2回目以降のチャンク処理の前にRPM制限のための遅延を入れる
-            if i > 0:
-                logger.info(f"Waiting {settings.GEMINI_RPM_DELAY}s for RPM limit...")
-                await asyncio.sleep(settings.GEMINI_RPM_DELAY)
-
             context_text = "\n\n".join(
                 [f"--- Source: {c.title} ({c.url}) ---\n{c.text}" for c in chunk]
             )

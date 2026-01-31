@@ -12,7 +12,3 @@ services:
       - "host.docker.internal:host-gateway"
     networks:
       - rag-net
-
-networks:
-  rag-net:
-    external: true
