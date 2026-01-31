@@ -42,15 +42,35 @@ cp .env.example .env
 
 ## 実行方法
 
+### Docker を使用する場合（推奨）
+
+ルートディレクトリの `docker compose` を使用して実行します。このバッチは `manual` プロファイルに設定されているため、明示的に指定して起動する必要があります。
+
 1. **前提条件**:
-   - [Elasticsearch](../elasticsearch/docker-compose.yml) が起動していること。
-   - [splade-encoder-api](../splade-encoder-api/) が `8000` ポート等で起動していること。
+   - ルートディレクトリに `.env` が作成されており、`SCRAPBOX_PROJECT` 等が設定されていること。
 
 2. **バッチ実行**:
+   ```bash
+   docker compose --profile manual run --rm ingestion-batch
+   ```
+   ※ このコマンドにより、依存する Elasticsearch や SPLADE API も（未起動であれば）自動的に起動します。
 
-```bash
-uv run python -m batch.main
-```
+3. **ログの確認**:
+   ```bash
+   docker compose --profile manual logs -f ingestion-batch
+   ```
+
+### ローカル（uv）で直接実行する場合
+
+1. **前提条件**:
+   - [Elasticsearch](../elasticsearch/README.md) が起動していること。
+   - [splade-encoder-api](../splade-encoder-api/) が起動していること。
+   - `.env` ファイルに正しい接続先（`localhost` 等）が設定されていること。
+
+2. **バッチ起動**:
+   ```bash
+   uv run python -m batch.main
+   ```
 
 格納されたデータのチェック
 

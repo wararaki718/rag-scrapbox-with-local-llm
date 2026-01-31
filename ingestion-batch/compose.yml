@@ -1,0 +1,19 @@
+services:
+  ingestion-batch:
+    build:
+      context: .
+    container_name: ingestion-batch
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - SPLADE_API_URL=http://splade-encoder:8000/encode
+      - SCRAPBOX_PROJECT=${SCRAPBOX_PROJECT}
+      - SCRAPBOX_SID=${SCRAPBOX_SID}
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      splade-encoder:
+        condition: service_healthy
+    networks:
+      - rag-net
+    profiles:
+      - manual

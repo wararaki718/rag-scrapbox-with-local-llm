@@ -3,6 +3,7 @@ include:
   - path: splade-encoder-api/compose.yml
   - path: gemma-api/compose.yml
   - path: search-api/compose.yml
+  - path: ingestion-batch/compose.yml
   - path: web-ui/compose.yml
 
 networks:
